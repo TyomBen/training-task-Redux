@@ -1,47 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { data } from "../../data/fakedata";
 
-const cartsSlice =  createSlice({
-    name: 'carts',
-    initialState: {
-        data,
-        amount: 0,
-        totalPrice: 0,
+const cartsSlice = createSlice({
+  name: "carts",
+  initialState: {
+    data,
+    amount: 0,
+    totalPrice: 0,
+  },
+  reducers: {
+    remove: (state, action) => {
+      state.data = state.data.filter((item) => item.id !== action.payload);
     },
-    reducers: {
-        remove: (state, action) => {
-            
-            console.log('remove-state', state, action)
-            state.data = state.data.filter(item => item.id !== action.payload)
-        },
 
-        clearAllData: (state) => {
-            state.data = [];
-        },
+    clearAllData: (state) => {
+      state.data = [];
+    },
 
-        calculateTotal: (state, action) => {
-            console.log('state.data', state.data)
-             state.data.forEach(item => {
-                state.totalPrice += +item.price
-            })
-            // console.log()
-
-            // state.totalPrice = totalPrice
-
-        },     
-        calculateAmount: (state, action) => {
-            state.amount = state.data.length
+    calculateTotal: (state) => {
+      state.totalPrice = 0;
+      state.data.forEach((item) => {
+        state.totalPrice += +item.price;
+      });
+    },
+    calculateAmount: (state) => {
+      state.amount = state.data.length;
+    },
+    countIncrement: (state, action) => {    
+      state.data.map((item) => {
+        if (item.id === action.payload) {
+          state.totalPrice += +item.price;
+          //state.data.length += 1 //senc amount@ bardzranuma bayc gumar@ chi bardzranum
         }
-    }
+      });
+    },
+    countDecrement: (state, action) => {
+      state.data.map((item) => {
+        if (item.id === action.payload) {
+          state.totalPrice -= +item.price;
+          state.data.length -= 1;
+        }
+      });
+    },
+  },
+});
 
-})
-
-const { 
-    remove, 
-    calculateTotal, 
-    clearAllData, 
-    calculateAmount,
- } = cartsSlice.actions;
-export  { remove, calculateTotal, clearAllData, calculateAmount };
+export const {
+  remove,
+  calculateTotal,
+  clearAllData,
+  calculateAmount,
+  countIncrement,
+  countDecrement,
+} = cartsSlice.actions;
 
 export default cartsSlice.reducer;
